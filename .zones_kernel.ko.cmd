@@ -1,1 +1,0 @@
-cmd_/home/oem/kernel_process_12_02/zones_kernel.ko := ld -r  -m elf_x86_64 -z noexecstack   --build-id=sha1  -T scripts/module.lds -o /home/oem/kernel_process_12_02/zones_kernel.ko /home/oem/kernel_process_12_02/zones_kernel.o /home/oem/kernel_process_12_02/zones_kernel.mod.o;  true

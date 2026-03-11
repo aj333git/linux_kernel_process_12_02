@@ -1,2 +1,0 @@
-/home/oem/kernel_process_12_02/zones_kernel.o
-
