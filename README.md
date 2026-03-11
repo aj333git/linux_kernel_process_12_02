@@ -40,6 +40,30 @@ Each zone contains many memory pages (rooms).
 | populated_zone() | Checks if zone contains memory |
 | for_each_online_node() | Iterates over active memory nodes |
 
-Headers used:
+
+
+## Educational Purpose
+
+This module demonstrates:
+
+- Linux kernel memory architecture
+- Memory nodes and zones
+- Kernel module development
+- Kernel logging with `pr_info`
+
+---
+
+## Author
+
+Amit Joshi  
+Linux System Programming & Cyber Security Engineering
+
+---
+
+## Disclaimer
+
+This module is for educational and research purposes only.
+Do not use in production systems without understanding the risks.
+
 
 
