@@ -1,0 +1,30 @@
+make
+
+make clean
+
+
+sudo /usr/src/linux-headers-$(uname -r)/scripts/sign-file sha256 ~/kernel_keys/MOK.key ~/kernel_keys/MOK.crt zones_kernel.ko
+
+sudo insmod zones_kernel.ko
+
+dmesg | tail -n 10
+
+sudo rmmod zones_kernel
+
+
+
+sudo insmod zones_kernel.ko
+
+dmesg
+
+sudo rmmod zones_kernel
+
+
+
+make → builds the module
+
+sudo insmod zones_kernel.ko → loads it
+
+sudo rmmod zones_kernel → unloads it
+
+dmesg → shows printed memory info

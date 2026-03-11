@@ -1,0 +1,160 @@
+Think of computer memory like a city of buildings (nodes), each building has floors (zones), and each floor has rooms (pages). 🏢🏬🛏️
+
+
+pgdat → building (memory node)
+
+zone → floor in that building (memory zone)
+
+nid → building number (node ID)
+
+zid → floor number (zone ID)
+
+for_each_online_node(nid)
+    pgdat = NODE_DATA(nid);
+
+Check every node (building) that is online/active.
+
+NODE_DATA(nid) → gives info about that building.
+
+for (zid = 0; zid < MAX_NR_ZONES; zid++)
+    zone = &pgdat->node_zones[zid];
+
+Loop through all possible zones (floors) in that node.
+
+MAX_NR_ZONES → total possible floors.
+
+zone → pointer to the current floor’s info.
+
+if (!populated_zone(zone))
+    continue;
+
+If the floor has no memory, skip it.
+
+Only process zones that actually contain pages.
+
+pr_info("  Zone: %s\n", zone->name);
+pr_info("    Managed pages: %lu\n", zone_managed_pages(zone));
+
+zone->name → name of the zone (DMA, Normal, etc.)
+
+zone_managed_pages(zone) → how many pages are in that zone
+
+Each page is usually 4 KB.
+
+
+make → builds the module
+
+sudo insmod zones_kernel.ko → loads it
+
+sudo rmmod zones_kernel → unloads it
+
+dmesg → shows printed memory info
+This kernel module inspects the memory city and prints info about each zone that has memory.
+
+This kernel module checks how the computer's RAM is divided into zones and prints that information in the kernel log.
+module prints which zones exist and how many memory pages they manage.
+
+MAX_NR_ZONES is a constant defined in include/linux/mmzone.h that tells the kernel the maximum number of memory zones per node.
+
+struct zone *zone;
+
+It means: “I want a pointer to a floor of memory I can inspect.”
+struct zone *zone;
+
+zone is a pointer to a memory zone structure.
+
+Each zone knows:
+
+How many pages it has
+
+What kind of memory it manages (DMA, Normal, Movable…)
+
+Which pages are free or used
+
+The struct zone comes from <linux/mmzone.h>, which defines all memory zones
+
+struct pglist_data *pgdat;
+
+pgdat is a pointer to a memory node structure.
+
+
+zone = &pgdat->node_zones[zid];
+/ Pretend building has 3 floors
+pgdat->node_zones[0] = DMA
+pgdat->node_zones[1] = DMA32
+pgdat->node_zones[2] = Normal
+
+zid = 1
+zone = &pgdat->node_zones[zid]
+
+Now:
+
+zone->name  → "DMA32"
+zone_managed_pages(zone) → 210000
+
+
+
+
+ zone_managed_pages(zone)
+ 
+ zone_managed_pages(zone)
+
+It’s a macro (a little helper) defined by the Linux kernel.
+
+Purpose: tell you how many memory pages a zone manages.
+
+A “page” is the basic unit of memory (usually 4 KB).
+
+So if zone_managed_pages(zone) returns 1000, it means that zone has 1000 × 4 KB = 4 MB of memory.
+
+
+
+
+if (!populated_zone(zone))
+    continue;
+populated_zone(zone)
+
+This is a macro (helper) from the kernel.
+
+It checks if the zone actually has memory pages.
+
+Returns true if the zone exists and has memory, false if it’s empty.
+
+!populated_zone(zone)
+
+The ! means NOT.
+
+So this is true when the zone is empty.
+
+
+if (!populated_zone(zone))
+    continue;
+
+Plain English:
+
+“If this zone has no memory, skip it and check the next zone.”
+
+
+✅ Big Picture Summary
+
+The module loops over memory nodes (buildings).
+
+For each node, it loops over memory zones (floors).
+
+Skips empty zones.
+
+Prints zone name and how many memory pages it has.
+
+Cleans up on unload
+
+| Memory Concept      | Analogy                 | Header that defines it |
+| ------------------- | ----------------------- | ---------------------- |
+| Node (pglist_data)  | A building              | `node.h`               |
+| Zone (struct zone)  | A floor in the building | `mmzone.h`             |
+| Pages (struct page) | Rooms on the floor      | `mm.h`                 |
+
+
+Your module’s job:
+
+Walk through each building, then each floor, and count how many rooms exist.
+
